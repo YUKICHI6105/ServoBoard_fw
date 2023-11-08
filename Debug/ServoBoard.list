@@ -1,5 +1,5 @@
 
-ServoBoard.elf:     file format elf32-littlearm
+ServoBoard_fw.elf:     file format elf32-littlearm
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn

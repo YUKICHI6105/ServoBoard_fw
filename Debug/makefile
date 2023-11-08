@@ -49,34 +49,34 @@ $(wildcard ../makefile.init) \
 $(wildcard ../makefile.targets) \
 
 
-BUILD_ARTIFACT_NAME := ServoBoard
+BUILD_ARTIFACT_NAME := ServoBoard_fw
 BUILD_ARTIFACT_EXTENSION := elf
 BUILD_ARTIFACT_PREFIX :=
 BUILD_ARTIFACT := $(BUILD_ARTIFACT_PREFIX)$(BUILD_ARTIFACT_NAME)$(if $(BUILD_ARTIFACT_EXTENSION),.$(BUILD_ARTIFACT_EXTENSION),)
 
 # Add inputs and outputs from these tool invocations to the build variables 
 EXECUTABLES += \
-ServoBoard.elf \
+ServoBoard_fw.elf \
 
 MAP_FILES += \
-ServoBoard.map \
+ServoBoard_fw.map \
 
 SIZE_OUTPUT += \
 default.size.stdout \
 
 OBJDUMP_LIST += \
-ServoBoard.list \
+ServoBoard_fw.list \
 
 
 # All Target
 all: main-build
 
 # Main-build Target
-main-build: ServoBoard.elf secondary-outputs
+main-build: ServoBoard_fw.elf secondary-outputs
 
 # Tool invocations
-ServoBoard.elf ServoBoard.map: $(OBJS) $(USER_OBJS) C:\Users\kouza\STM32CubeIDE\workspace_1.9.0\ServoBoard\STM32F103C8TX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-g++ -o "ServoBoard.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"C:\Users\kouza\STM32CubeIDE\workspace_1.9.0\ServoBoard\STM32F103C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="ServoBoard.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -lstdc++ -lsupc++ -Wl,--end-group
+ServoBoard_fw.elf ServoBoard_fw.map: $(OBJS) $(USER_OBJS) C:\Users\kouza\STM32CubeIDE\workspace_1.9.0\ServoBoard_fw\STM32F103C8TX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-g++ -o "ServoBoard_fw.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"C:\Users\kouza\STM32CubeIDE\workspace_1.9.0\ServoBoard_fw\STM32F103C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="ServoBoard_fw.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -lstdc++ -lsupc++ -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
@@ -85,14 +85,14 @@ default.size.stdout: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
 	@echo 'Finished building: $@'
 	@echo ' '
 
-ServoBoard.list: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-objdump -h -S $(EXECUTABLES) > "ServoBoard.list"
+ServoBoard_fw.list: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-objdump -h -S $(EXECUTABLES) > "ServoBoard_fw.list"
 	@echo 'Finished building: $@'
 	@echo ' '
 
 # Other Targets
 clean:
-	-$(RM) ServoBoard.elf ServoBoard.list ServoBoard.map default.size.stdout
+	-$(RM) ServoBoard_fw.elf ServoBoard_fw.list ServoBoard_fw.map default.size.stdout
 	-@echo ' '
 
 secondary-outputs: $(SIZE_OUTPUT) $(OBJDUMP_LIST)
