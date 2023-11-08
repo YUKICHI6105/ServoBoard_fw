@@ -67,6 +67,7 @@ void Error_Handler(void);
 #define LED_RED_GPIO_Port GPIOB
 #define EMS_Pin GPIO_PIN_15
 #define EMS_GPIO_Port GPIOB
+#define EMS_EXTI_IRQn EXTI15_10_IRQn
 #define LED_CAN_Pin GPIO_PIN_8
 #define LED_CAN_GPIO_Port GPIOA
 
