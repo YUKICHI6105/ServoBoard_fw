@@ -4,5 +4,5 @@
 ../Core/Src/ServoCtrl.cpp:41:6:bool ServoCtrl::setMode(uint8_t)	16	static
 ../Core/Src/ServoCtrl.cpp:51:6:Mode ServoCtrl::getMode()	16	static
 ../Core/Src/ServoCtrl.cpp:55:6:bool ServoCtrl::reset()	16	static
-../Core/Src/ServoCtrl.cpp:69:6:void ServoCtrl::startPWM()	16	static
-../Core/Src/ServoCtrl.cpp:84:6:void ServoCtrl::stopPWM()	16	static
+../Core/Src/ServoCtrl.cpp:71:6:void ServoCtrl::startPWM()	16	static
+../Core/Src/ServoCtrl.cpp:87:6:void ServoCtrl::stopPWM()	16	static

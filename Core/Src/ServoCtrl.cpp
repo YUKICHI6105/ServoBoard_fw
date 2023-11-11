@@ -63,6 +63,8 @@ bool ServoCtrl::reset(){
 	HAL_TIM_PWM_Stop(&htim3, TIM_CHANNEL_3);
 	HAL_TIM_PWM_Stop(&htim3, TIM_CHANNEL_4);
 	preMode = Mode::dis;
+	HAL_GPIO_WritePin(LED_YELLOW_GPIO_Port,LED_YELLOW_Pin,GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(LED_RED_GPIO_Port,LED_RED_Pin,GPIO_PIN_SET);
 	return true;
 }
 
@@ -78,6 +80,7 @@ void ServoCtrl::startPWM(){
 		HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_3);
 		HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_4);
 		preMode = Mode::pos;
+		HAL_GPIO_WritePin(LED_YELLOW_GPIO_Port,LED_YELLOW_Pin,GPIO_PIN_SET);
 	}
 }
 
@@ -93,5 +96,6 @@ void ServoCtrl::stopPWM(){
 		HAL_TIM_PWM_Stop(&htim3, TIM_CHANNEL_3);
 		HAL_TIM_PWM_Stop(&htim3, TIM_CHANNEL_4);
 		preMode = Mode::dis;
+		HAL_GPIO_WritePin(LED_YELLOW_GPIO_Port,LED_YELLOW_Pin,GPIO_PIN_RESET);
 	}
 }
