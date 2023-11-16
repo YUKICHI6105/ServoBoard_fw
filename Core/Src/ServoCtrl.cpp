@@ -15,10 +15,10 @@ uint32_t ServoCtrl::getBaseID(){
 }
 
 bool ServoCtrl::setTIM2Duty(uint8_t data[8]){
-	std::memcpy(&duty[0],&data + 0,sizeof(uint16_t));
-	std::memcpy(&duty[1],&data + 2,sizeof(uint16_t));
-	std::memcpy(&duty[2],&data + 4,sizeof(uint16_t));
-	std::memcpy(&duty[3],&data + 6,sizeof(uint16_t));
+	std::memcpy(&duty[0],data + 0,sizeof(uint16_t));
+	std::memcpy(&duty[1],data + 2,sizeof(uint16_t));
+	std::memcpy(&duty[2],data + 4,sizeof(uint16_t));
+	std::memcpy(&duty[3],data + 6,sizeof(uint16_t));
 	__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, duty[0]);
 	__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_2, duty[1]);
 	__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_3, duty[2]);
@@ -27,10 +27,10 @@ bool ServoCtrl::setTIM2Duty(uint8_t data[8]){
 }
 
 bool ServoCtrl::setTIM3Duty(uint8_t data[8]){
-	std::memcpy(&duty[4],&data + 0,sizeof(uint16_t));
-	std::memcpy(&duty[5],&data + 2,sizeof(uint16_t));
-	std::memcpy(&duty[6],&data + 4,sizeof(uint16_t));
-	std::memcpy(&duty[7],&data + 6,sizeof(uint16_t));
+	std::memcpy(&duty[4],data + 0,sizeof(uint16_t));
+	std::memcpy(&duty[5],data + 2,sizeof(uint16_t));
+	std::memcpy(&duty[6],data + 4,sizeof(uint16_t));
+	std::memcpy(&duty[7],data + 6,sizeof(uint16_t));
 	__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, duty[4]);
 	__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_2, duty[5]);
 	__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_3, duty[6]);
@@ -39,13 +39,21 @@ bool ServoCtrl::setTIM3Duty(uint8_t data[8]){
 }
 
 bool ServoCtrl::setMode(uint8_t mode){
-	switch(mode){
-	case 0:
-		ServoCtrl::mode = Mode::dis;
-	case 1:
-		ServoCtrl::mode = Mode::pos;
+	if(HAL_GPIO_ReadPin(EMS_GPIO_Port,EMS_Pin) == GPIO_PIN_SET){
+		switch(mode){
+		case 0:
+			ServoCtrl::mode = Mode::dis;
+			break;
+		case 1:
+			ServoCtrl::mode = Mode::pos;
+			break;
+		default:
+			break;
+		}
+		return true;
+	}else{
+		return false;
 	}
-	return true;
 }
 
 Mode ServoCtrl::getMode(){
@@ -62,7 +70,7 @@ bool ServoCtrl::reset(){
 	HAL_TIM_PWM_Stop(&htim3, TIM_CHANNEL_2);
 	HAL_TIM_PWM_Stop(&htim3, TIM_CHANNEL_3);
 	HAL_TIM_PWM_Stop(&htim3, TIM_CHANNEL_4);
-	preMode = Mode::dis;
+	mode = Mode::dis;
 	HAL_GPIO_WritePin(LED_YELLOW_GPIO_Port,LED_YELLOW_Pin,GPIO_PIN_RESET);
 	HAL_GPIO_WritePin(LED_RED_GPIO_Port,LED_RED_Pin,GPIO_PIN_SET);
 	return true;
@@ -81,21 +89,27 @@ void ServoCtrl::startPWM(){
 		HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_4);
 		preMode = Mode::pos;
 		HAL_GPIO_WritePin(LED_YELLOW_GPIO_Port,LED_YELLOW_Pin,GPIO_PIN_SET);
+		HAL_GPIO_WritePin(LED_RED_GPIO_Port,LED_RED_Pin,GPIO_PIN_RESET);
 	}
 }
 
 void ServoCtrl::stopPWM(){
-	if(HAL_GPIO_ReadPin(EMS_GPIO_Port,EMS_Pin) == GPIO_PIN_RESET){
-		HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_1);
-		HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_2);
-		HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_3);
-		HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_4);
+	if((HAL_GPIO_ReadPin(EMS_GPIO_Port,EMS_Pin) == GPIO_PIN_RESET)||(mode == Mode::dis)){
+		mode = Mode::dis;
+		if(preMode == Mode::pos){
+			HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_1);
+			HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_2);
+			HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_3);
+			HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_4);
 
-		HAL_TIM_PWM_Stop(&htim3, TIM_CHANNEL_1);
-		HAL_TIM_PWM_Stop(&htim3, TIM_CHANNEL_2);
-		HAL_TIM_PWM_Stop(&htim3, TIM_CHANNEL_3);
-		HAL_TIM_PWM_Stop(&htim3, TIM_CHANNEL_4);
-		preMode = Mode::dis;
+			HAL_TIM_PWM_Stop(&htim3, TIM_CHANNEL_1);
+			HAL_TIM_PWM_Stop(&htim3, TIM_CHANNEL_2);
+			HAL_TIM_PWM_Stop(&htim3, TIM_CHANNEL_3);
+			HAL_TIM_PWM_Stop(&htim3, TIM_CHANNEL_4);
+			preMode = Mode::dis;
+		}
+		//preMode = Mode::dis;
 		HAL_GPIO_WritePin(LED_YELLOW_GPIO_Port,LED_YELLOW_Pin,GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(LED_RED_GPIO_Port,LED_RED_Pin,GPIO_PIN_SET);
 	}
 }

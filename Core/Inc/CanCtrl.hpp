@@ -16,13 +16,14 @@ extern "C"{
 
 class CanCtrl {
 private:
-	uint8_t rxData;
+	uint8_t rxData[8];
 	CAN_RxHeaderTypeDef rxHeader;//受信用フレーム設定
 	CAN_FilterTypeDef filter;//受信時に中身を仕分けるためのパラメーター設定
 	int canFlug = 0;
 	uint32_t canTick = 0.0f;
 public:
 	CanCtrl();
+	void canInit();
 	bool receive(uint32_t& RID,uint8_t data[8]);//受信関数(エラー判定のみ)内容は引数に入れ込む。
 	void ledCan();
 };
@@ -39,13 +40,18 @@ inline CanCtrl::CanCtrl(){
 	filter.FilterMode           = CAN_FILTERMODE_IDMASK;    // フィルターモード
 	filter.SlaveStartFilterBank = 14;                       // スレーブCANの開始フィルターバンクNo
 	filter.FilterActivation     = ENABLE;                   // フィルター無効／有効
+}
+
+inline void CanCtrl::canInit(){
 	HAL_CAN_ConfigFilter(&hcan, &filter);
 }
 
 inline bool CanCtrl::receive(uint32_t& RID,uint8_t data[8]){
 	if (HAL_CAN_GetRxMessage(&hcan, CAN_RX_FIFO0, &rxHeader, data) == HAL_OK){
 		RID = rxHeader.StdId;
-		rxData=data[0];
+		for(uint8_t i = 0;i<8;i++){
+			rxData[i] = data[i];
+		}
 		canFlug =1;
 		return true;
 	}
@@ -61,8 +67,6 @@ inline void CanCtrl::ledCan(){
 	canFlug = 0;
 	}
 	else if(HAL_GetTick() > canTick+150){
-		if(GPIOC->ODR == GPIO_ODR_ODR8_Msk){
-			HAL_GPIO_WritePin(LED_CAN_GPIO_Port,LED_CAN_Pin,GPIO_PIN_RESET);
-		}
+		HAL_GPIO_WritePin(LED_CAN_GPIO_Port,LED_CAN_Pin,GPIO_PIN_RESET);
 	}
 }

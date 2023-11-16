@@ -1,8 +1,8 @@
 ../Core/Src/ServoCtrl.cpp:13:10:uint32_t ServoCtrl::getBaseID()	1
 ../Core/Src/ServoCtrl.cpp:17:6:bool ServoCtrl::setTIM2Duty(uint8_t*)	1
 ../Core/Src/ServoCtrl.cpp:29:6:bool ServoCtrl::setTIM3Duty(uint8_t*)	1
-../Core/Src/ServoCtrl.cpp:41:6:bool ServoCtrl::setMode(uint8_t)	3
-../Core/Src/ServoCtrl.cpp:51:6:Mode ServoCtrl::getMode()	1
-../Core/Src/ServoCtrl.cpp:55:6:bool ServoCtrl::reset()	1
-../Core/Src/ServoCtrl.cpp:71:6:void ServoCtrl::startPWM()	3
-../Core/Src/ServoCtrl.cpp:87:6:void ServoCtrl::stopPWM()	2
+../Core/Src/ServoCtrl.cpp:41:6:bool ServoCtrl::setMode(uint8_t)	4
+../Core/Src/ServoCtrl.cpp:59:6:Mode ServoCtrl::getMode()	1
+../Core/Src/ServoCtrl.cpp:63:6:bool ServoCtrl::reset()	1
+../Core/Src/ServoCtrl.cpp:79:6:void ServoCtrl::startPWM()	3
+../Core/Src/ServoCtrl.cpp:96:6:void ServoCtrl::stopPWM()	5

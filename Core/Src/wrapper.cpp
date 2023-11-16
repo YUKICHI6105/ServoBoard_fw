@@ -11,7 +11,7 @@ extern TIM_HandleTypeDef htim3;
 
 	void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan){
 		uint32_t receiveID = 0x110;
-		uint8_t receiveData[8];
+		uint8_t receiveData[8] = {0,0,0,0,0,0,0,0};
 		if (can.receive(receiveID,receiveData) == false)return;
 		switch(receiveID){
 			case 0x300:
@@ -52,6 +52,7 @@ extern TIM_HandleTypeDef htim3;
 			HAL_Delay(100);
 		}
 		HAL_GPIO_WritePin(LED_GREEN_GPIO_Port,LED_GREEN_Pin,GPIO_PIN_SET);
+		can.canInit();
 
 		HAL_CAN_Start(&hcan);
 		HAL_CAN_ActivateNotification(&hcan, CAN_IT_RX_FIFO0_MSG_PENDING);
