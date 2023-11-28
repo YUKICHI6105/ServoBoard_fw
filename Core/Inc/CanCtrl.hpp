@@ -10,49 +10,59 @@
 #include <stm32f1xx_hal_can.h>
 #include <stm32f1xx_hal_gpio.h>
 
-extern "C"{
-	extern CAN_HandleTypeDef hcan;
-}
+enum CanLed{
+	none,
+	received,
+	sended
+};
 
 class CanCtrl {
 private:
 	uint8_t rxData[8];
-	CAN_RxHeaderTypeDef rxHeader;//受信用フレーム設定
-	CAN_FilterTypeDef filter;//受信時に中身を仕分けるためのパラメーター設定
-	int canFlug = 0;
-	uint32_t canTick = 0.0f;
+	CAN_TxHeaderTypeDef txHeader_;//送信用フレーム設定
+	CAN_RxHeaderTypeDef rxHeader_;//受信用フレーム設定
+	CAN_FilterTypeDef filter_;//受信時に中身を仕分けるためのパラメーター設定
+	CanLed canFlug_ = CanLed::none;
+	uint32_t canTick_ = 0.0f;
 public:
 	CanCtrl();
-	void canInit();
-	bool receive(uint32_t& RID,uint8_t data[8]);//受信関数(エラー判定のみ)内容は引数に入れ込む。
+	void init(CAN_HandleTypeDef &hcan);
+	bool receive(CAN_HandleTypeDef &hcan ,uint32_t& RID,uint8_t (&data)[8]);//受信関数(エラー判定のみ)内容は引数に入れ込む。
+	bool send(CAN_HandleTypeDef &hcan ,uint32_t TID ,uint8_t (&data)[8], uint8_t dlc);
 	void ledCan();
 };
 
 inline CanCtrl::CanCtrl(){
-	filter.FilterIdHigh         = 0x300 << 5;               // フィルターIDの上位16ビット
-	filter.FilterIdLow          = 0;                        // フィルターIDの下位16ビット
-	filter.FilterMaskIdHigh     = 0x7f8 << 5;               // フィルターマスクの上位16ビット
-	filter.FilterMaskIdLow      = 0b110;                    // フィルターマスクの下位16ビット
+	txHeader_.RTR = CAN_RTR_DATA;            // フレームタイプはデータフレーム
+	txHeader_.IDE = CAN_ID_STD;              // 標準ID(11ﾋﾞｯﾄ)
+	txHeader_.DLC = 8;                       // データ長は8バイトに
+	txHeader_.TransmitGlobalTime = DISABLE;  // ???
+	filter_.FilterIdHigh         = 0x300 << 5;               // フィルターIDの上位16ビット
+	filter_.FilterIdLow          = 0;                        // フィルターIDの下位16ビット
+	filter_.FilterMaskIdHigh     = 0x7f8 << 5;               // フィルターマスクの上位16ビット
+	filter_.FilterMaskIdLow      = 0b110;                    // フィルターマスクの下位16ビット
 	//フィルターマスクは1が確定させたいところで0が無視したいところ
-	filter.FilterScale          = CAN_FILTERSCALE_32BIT;    // フィルタースケール
-	filter.FilterFIFOAssignment = CAN_FILTER_FIFO0;         // フィルターに割り当てるFIFO
-	filter.FilterBank           = 0;                        // フィルターバンクNo
-	filter.FilterMode           = CAN_FILTERMODE_IDMASK;    // フィルターモード
-	filter.SlaveStartFilterBank = 14;                       // スレーブCANの開始フィルターバンクNo
-	filter.FilterActivation     = ENABLE;                   // フィルター無効／有効
+	filter_.FilterScale          = CAN_FILTERSCALE_32BIT;    // フィルタースケール
+	filter_.FilterFIFOAssignment = CAN_FILTER_FIFO0;         // フィルターに割り当てるFIFO
+	filter_.FilterBank           = 0;                        // フィルターバンクNo
+	filter_.FilterMode           = CAN_FILTERMODE_IDMASK;    // フィルターモード
+	filter_.SlaveStartFilterBank = 14;                       // スレーブCANの開始フィルターバンクNo
+	filter_.FilterActivation     = ENABLE;                   // フィルター無効／有効
 }
 
-inline void CanCtrl::canInit(){
-	HAL_CAN_ConfigFilter(&hcan, &filter);
+inline void CanCtrl::init(CAN_HandleTypeDef &hcan){
+	HAL_CAN_ConfigFilter(&hcan, &filter_);
+	HAL_CAN_Start(&hcan);
+	HAL_CAN_ActivateNotification(&hcan, CAN_IT_RX_FIFO0_MSG_PENDING);
 }
 
-inline bool CanCtrl::receive(uint32_t& RID,uint8_t data[8]){
-	if (HAL_CAN_GetRxMessage(&hcan, CAN_RX_FIFO0, &rxHeader, data) == HAL_OK){
-		RID = rxHeader.StdId;
+inline bool CanCtrl::receive(CAN_HandleTypeDef &hcan ,uint32_t& RID,uint8_t (&data)[8]){
+	if (HAL_CAN_GetRxMessage(&hcan, CAN_RX_FIFO0, &rxHeader_, data) == HAL_OK){
+		RID = rxHeader_.StdId;
 		for(uint8_t i = 0;i<8;i++){
 			rxData[i] = data[i];
 		}
-		canFlug =1;
+		canFlug_ = CanLed::received;
 		return true;
 	}
 	else{
@@ -60,13 +70,35 @@ inline bool CanCtrl::receive(uint32_t& RID,uint8_t data[8]){
 	}
 }
 
-inline void CanCtrl::ledCan(){
-	if(canFlug == 1){
-	HAL_GPIO_WritePin(LED_CAN_GPIO_Port,LED_CAN_Pin,GPIO_PIN_SET);
-	canTick = HAL_GetTick();
-	canFlug = 0;
+inline bool CanCtrl::send(CAN_HandleTypeDef &hcan ,uint32_t TID/*送信用ID*/,uint8_t (&data)[8]/*送信内容*/,uint8_t dlc){
+	txHeader_.StdId = TID;
+	txHeader_.DLC = dlc;
+	if(0 < HAL_CAN_GetTxMailboxesFreeLevel(&hcan)){
+		uint32_t TxMailbox;//ボックス番号(ここに返ってくる)
+		if (HAL_CAN_AddTxMessage(&hcan,&txHeader_,data,&TxMailbox) == HAL_OK){
+			canFlug_ = CanLed::sended;
+			return true;
+		}
+		else{
+			return false;
+		}
 	}
-	else if(HAL_GetTick() > canTick+150){
+	else{
+		return false;
+	}
+}
+
+inline void CanCtrl::ledCan(){
+	if(canFlug_ == CanLed::received){
+		HAL_GPIO_WritePin(LED_CAN_GPIO_Port,LED_CAN_Pin,GPIO_PIN_SET);
+		canTick_ = HAL_GetTick();
+		canFlug_ = CanLed::none;
+	}else if(canFlug_ == CanLed::sended){
+		HAL_GPIO_WritePin(LED_CAN_GPIO_Port,LED_CAN_Pin,GPIO_PIN_SET);
+		canTick_ = HAL_GetTick();
+		canFlug_ = CanLed::none;
+	}
+	else if(HAL_GetTick() > canTick_+150){
 		HAL_GPIO_WritePin(LED_CAN_GPIO_Port,LED_CAN_Pin,GPIO_PIN_RESET);
 	}
 }

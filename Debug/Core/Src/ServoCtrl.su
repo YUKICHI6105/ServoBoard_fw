@@ -1,8 +1,10 @@
-../Core/Src/ServoCtrl.cpp:13:10:uint32_t ServoCtrl::getBaseID()	16	static
-../Core/Src/ServoCtrl.cpp:17:6:bool ServoCtrl::setTIM2Duty(uint8_t*)	16	static
-../Core/Src/ServoCtrl.cpp:29:6:bool ServoCtrl::setTIM3Duty(uint8_t*)	16	static
-../Core/Src/ServoCtrl.cpp:41:6:bool ServoCtrl::setMode(uint8_t)	16	static
-../Core/Src/ServoCtrl.cpp:59:6:Mode ServoCtrl::getMode()	16	static
-../Core/Src/ServoCtrl.cpp:63:6:bool ServoCtrl::reset()	16	static
-../Core/Src/ServoCtrl.cpp:79:6:void ServoCtrl::startPWM()	16	static
-../Core/Src/ServoCtrl.cpp:96:6:void ServoCtrl::stopPWM()	16	static
+../Core/Src/ServoCtrl.cpp:8:10:uint32_t ServoCtrl::getBaseID()	16	static
+../Core/Src/ServoCtrl.cpp:12:6:bool ServoCtrl::setDuty(TIM_HandleTypeDef&, uint8_t*)	24	static
+../Core/Src/ServoCtrl.cpp:62:9:uint8_t TIM_ERROR(TIM_HandleTypeDef&, uint32_t)	16	static
+../Core/Src/ServoCtrl.cpp:66:6:bool ServoCtrl::setMode(uint8_t)	16	static
+../Core/Src/ServoCtrl.cpp:84:6:Mode ServoCtrl::getMode()	16	static
+../Core/Src/ServoCtrl.cpp:88:6:bool ServoCtrl::reset(TIM_HandleTypeDef&, TIM_HandleTypeDef&)	24	static
+../Core/Src/ServoCtrl.cpp:104:6:void ServoCtrl::startPWM_(TIM_HandleTypeDef&, uint32_t)	24	static
+../Core/Src/ServoCtrl.cpp:112:6:void ServoCtrl::startPWM(TIM_HandleTypeDef&, TIM_HandleTypeDef&)	24	static
+../Core/Src/ServoCtrl.cpp:129:6:void ServoCtrl::stopPWM_(TIM_HandleTypeDef&, uint32_t)	24	static
+../Core/Src/ServoCtrl.cpp:137:6:void ServoCtrl::stopPWM(TIM_HandleTypeDef&, TIM_HandleTypeDef&)	24	static
