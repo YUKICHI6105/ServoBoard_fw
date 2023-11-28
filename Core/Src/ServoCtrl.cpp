@@ -59,7 +59,7 @@ bool ServoCtrl::setDuty(TIM_HandleTypeDef &htim, uint8_t data[8]){
 //	return true;
 //}
 
-uint8_t TIM_ERROR(TIM_HandleTypeDef &htim, uint32_t Channel){
+uint8_t TIM_ERROR(/*TIM_HandleTypeDef &htim, uint32_t Channel*/){
 	return 0;
 }
 
@@ -104,7 +104,7 @@ bool ServoCtrl::reset(TIM_HandleTypeDef &htim2, TIM_HandleTypeDef &htim3){
 void ServoCtrl::startPWM_(TIM_HandleTypeDef &htim, uint32_t Channel){
 	if(htim.ChannelState[Channel/4] == HAL_TIM_CHANNEL_STATE_READY){
 		if(HAL_TIM_PWM_Start(&htim, Channel) == HAL_ERROR){
-			TIM_ERROR(htim, Channel);
+			TIM_ERROR(/*htim, Channel*/);
 		}
 	}
 }
@@ -129,7 +129,7 @@ void ServoCtrl::startPWM(TIM_HandleTypeDef &htim2, TIM_HandleTypeDef &htim3){
 void ServoCtrl::stopPWM_(TIM_HandleTypeDef &htim, uint32_t Channel){
 	if(htim.ChannelState[Channel/4] == HAL_TIM_CHANNEL_STATE_BUSY){
 		if(HAL_TIM_PWM_Stop(&htim, Channel) == HAL_ERROR){
-			TIM_ERROR(htim, Channel);
+			TIM_ERROR(/*htim, Channel*/);
 		}
 	}
 }
@@ -144,10 +144,10 @@ void ServoCtrl::stopPWM(TIM_HandleTypeDef &htim2, TIM_HandleTypeDef &htim3){
 		stopPWM_(htim2, TIM_CHANNEL_3);
 		stopPWM_(htim2, TIM_CHANNEL_4);
 
-		stopPWM_(htim2, TIM_CHANNEL_1);
-		stopPWM_(htim2, TIM_CHANNEL_2);
-		stopPWM_(htim2, TIM_CHANNEL_3);
-		stopPWM_(htim2, TIM_CHANNEL_4);
+		stopPWM_(htim3, TIM_CHANNEL_1);
+		stopPWM_(htim3, TIM_CHANNEL_2);
+		stopPWM_(htim3, TIM_CHANNEL_3);
+		stopPWM_(htim3, TIM_CHANNEL_4);
 
 		HAL_GPIO_WritePin(LED_YELLOW_GPIO_Port,LED_YELLOW_Pin,GPIO_PIN_RESET);
 		HAL_GPIO_WritePin(LED_RED_GPIO_Port,LED_RED_Pin,GPIO_PIN_SET);
