@@ -1,10 +1,7 @@
-../Core/Inc/CanCtrl.hpp:35:8:CanCtrl::CanCtrl()	16	static
-../Core/Inc/CanCtrl.hpp:53:13:void CanCtrl::init(CAN_HandleTypeDef&)	16	static
-../Core/Inc/CanCtrl.hpp:59:13:bool CanCtrl::receive(CAN_HandleTypeDef&, uint32_t&, uint8_t (&)[8])	32	static
-../Core/Inc/CanCtrl.hpp:73:13:bool CanCtrl::send(CAN_HandleTypeDef&, uint32_t, uint8_t (&)[8], uint8_t)	32	static
-../Core/Inc/CanCtrl.hpp:91:13:void CanCtrl::ledCan()	16	static
-../Core/Src/wrapper.cpp:15:7:void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef*)	88	static
-../Core/Src/wrapper.cpp:60:7:void HAL_GPIO_EXTI_Callback(uint16_t)	16	static
-../Core/Src/wrapper.cpp:70:7:void main_cpp()	16	static
-../Core/Src/wrapper.cpp:96:1:void __static_initialization_and_destruction_0(int, int)	16	static
-../Core/Src/wrapper.cpp:96:1:cpp)	8	static
+../Core/Inc/LedCtrl.hpp:4:6:void led::init()	16	static
+../Core/Inc/LedCtrl.hpp:19:6:void led::update(uint16_t&)	16	static
+../Core/Src/wrapper.cpp:16:7:void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef*)	88	static
+../Core/Src/wrapper.cpp:61:7:void HAL_GPIO_EXTI_Callback(uint16_t)	16	static
+../Core/Src/wrapper.cpp:71:7:void main_cpp()	16	static
+../Core/Src/wrapper.cpp:83:1:void __static_initialization_and_destruction_0(int, int)	16	static
+../Core/Src/wrapper.cpp:83:1:cpp)	8	static

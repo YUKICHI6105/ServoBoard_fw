@@ -1,9 +1,10 @@
 #include<main.h>
 #include<CanCtrl.hpp>
 #include<ServoCtrl.hpp>
+#include<LedCtrl.hpp>
 
-CanCtrl can;
 ServoCtrl servo;
+CanCtrl can;
 
 extern"C"{
 extern TIM_HandleTypeDef htim2;
@@ -68,29 +69,15 @@ extern CAN_HandleTypeDef hcan;
 	}
 
 	void main_cpp(){
-		for(uint8_t i=0;i<3;i++){
-			HAL_GPIO_WritePin(LED_RED_GPIO_Port, LED_RED_Pin, GPIO_PIN_SET);
-			HAL_GPIO_WritePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin, GPIO_PIN_RESET);
-			HAL_Delay(100);
-			HAL_GPIO_WritePin(LED_RED_GPIO_Port, LED_RED_Pin, GPIO_PIN_RESET);
-			HAL_GPIO_WritePin(LED_YELLOW_GPIO_Port, LED_YELLOW_Pin, GPIO_PIN_SET);
-			HAL_Delay(100);
-			HAL_GPIO_WritePin(LED_YELLOW_GPIO_Port, LED_YELLOW_Pin, GPIO_PIN_RESET);
-			HAL_GPIO_WritePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin, GPIO_PIN_SET);
-			HAL_Delay(100);
-		}
-		HAL_GPIO_WritePin(LED_GREEN_GPIO_Port,LED_GREEN_Pin,GPIO_PIN_SET);
-		can.init(hcan);
-
-
+		led::init();
+		can.init(hcan,servo.getBaseID());
+		uint16_t tick = 0;
 
 		while(true){
-			servo.startPWM(htim2 ,htim3);
-			servo.stopPWM(htim2 ,htim3);
-			can.ledCan();
-			uint16_t tick = HAL_GetTick()%2000;
-			if(tick < 100) HAL_GPIO_WritePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin, GPIO_PIN_RESET);
-			else HAL_GPIO_WritePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin, GPIO_PIN_SET);
+			servo.updateEMS();
+			servo.updatePWM(htim2 ,htim3);
+			can.updateLed();
+			led::update(tick);
 		}
 	}
 }

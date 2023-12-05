@@ -1,11 +1,11 @@
 #include <CanCtrl.hpp>
 
-CanCtrl::CanCtrl(){
+CanCtrl::CanCtrl(/*uint32_t baseID*/){
 	txHeader_.RTR = CAN_RTR_DATA;            // フレームタイプはデータフレーム
 	txHeader_.IDE = CAN_ID_STD;              // 標準ID(11ﾋﾞｯﾄ)
 	txHeader_.DLC = 8;                       // データ長は8バイトに
 	txHeader_.TransmitGlobalTime = DISABLE;  // ???
-	filter_.FilterIdHigh         = 0x300 << 5;               // フィルターIDの上位16ビット
+	filter_.FilterIdHigh         = 0x300/*baseID*/ << 5;              // フィルターIDの上位16ビット
 	filter_.FilterIdLow          = 0;                        // フィルターIDの下位16ビット
 	filter_.FilterMaskIdHigh     = 0x7f8 << 5;               // フィルターマスクの上位16ビット
 	filter_.FilterMaskIdLow      = 0b110;                    // フィルターマスクの下位16ビット
@@ -18,7 +18,8 @@ CanCtrl::CanCtrl(){
 	filter_.FilterActivation     = ENABLE;                   // フィルター無効／有効
 }
 
-void CanCtrl::init(CAN_HandleTypeDef &hcan){
+void CanCtrl::init(CAN_HandleTypeDef &hcan, uint32_t baseID){
+	filter_.FilterIdHigh = baseID << 5;
 	HAL_CAN_ConfigFilter(&hcan, &filter_);
 	HAL_CAN_Start(&hcan);
 	HAL_CAN_ActivateNotification(&hcan, CAN_IT_RX_FIFO0_MSG_PENDING);
@@ -56,7 +57,7 @@ bool CanCtrl::send(CAN_HandleTypeDef &hcan ,uint32_t TID/*送信用ID*/,uint8_t 
 	}
 }
 
-void CanCtrl::ledCan(){
+void CanCtrl::updateLed(){
 	if(canFlug_ == CanLed::received){
 		HAL_GPIO_WritePin(LED_CAN_GPIO_Port,LED_CAN_Pin,GPIO_PIN_SET);
 		canTick_ = HAL_GetTick();
