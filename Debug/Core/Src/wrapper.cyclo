@@ -1,5 +1,5 @@
-../Core/Inc/LedCtrl.hpp:4:6:void led::init()	2
-../Core/Inc/LedCtrl.hpp:19:6:void led::update(uint16_t&)	2
+../Core/Inc/LedCtrl.hpp:4:13:void led::init()	2
+../Core/Inc/LedCtrl.hpp:19:13:void led::update(uint16_t&)	2
 ../Core/Src/wrapper.cpp:16:7:void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef*)	9
 ../Core/Src/wrapper.cpp:61:7:void HAL_GPIO_EXTI_Callback(uint16_t)	3
 ../Core/Src/wrapper.cpp:71:7:void main_cpp()	1

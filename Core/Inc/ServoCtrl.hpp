@@ -11,8 +11,8 @@ private:
 	uint32_t baseID = 0x300;
 	uint16_t duty[8] = {0,0,0,0,0,0,0,0};
 	Mode mode = Mode::dis;
-	void startPWM_(TIM_HandleTypeDef &htim, uint32_t Channel);
-	void stopPWM_(TIM_HandleTypeDef &htim, uint32_t Channel);
+	void _startPWM(TIM_HandleTypeDef &htim, uint32_t Channel);
+	void _stopPWM(TIM_HandleTypeDef &htim, uint32_t Channel);
 public:
 //	ServoCtrl();
 	bool setBaseID(uint32_t baseID);
