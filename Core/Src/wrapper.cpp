@@ -17,45 +17,49 @@ extern CAN_HandleTypeDef hcan;
 		uint32_t receiveID = 0x110;
 		uint8_t receiveData[8] = {0,0,0,0,0,0,0,0};
 		if (can.receive(*hcan ,receiveID,receiveData) == false)return;
-		switch(receiveID){
-			case 0x300:
+		switch(receiveID-= can.getBaseID()){
+			case 0x0:
 				if(servo.setMode(receiveData[0]) == true){
 //					debug_code = 1;
 					uint8_t data[8];
 					data[0] = 1;
-					can.send(*hcan, 0x303, data, 1);
+					can.send(*hcan, can.getBaseID()+3, data, 1);
 				}else{
 					uint8_t data[8];
 					data[0] = 0;
-					can.send(*hcan, 0x303, data, 1);
+					can.send(*hcan, can.getBaseID()+3, data, 1);
 				}
 				break;
-			case 0x301:
+			case 0x1:
 				if(servo.setDuty(htim2 ,receiveData) == true){
 					uint8_t data[8];
 					data[0] = 3;
-					can.send(*hcan, 0x303, data, 1);
+					can.send(*hcan, can.getBaseID()+3, data, 1);
 				}else{
 					uint8_t data[8];
 					data[0] = 2;
-					can.send(*hcan, 0x303, data, 1);
+					can.send(*hcan, can.getBaseID()+3, data, 1);
 				}
 				break;
-			case 0x302:
+			case 0x2:
 				if(servo.setDuty(htim3 ,receiveData) == true){
 					uint8_t data[8];
 					data[0] = 5;
-					can.send(*hcan, 0x303, data, 1);
+					can.send(*hcan, can.getBaseID()+3, data, 1);
 				}else{
 					uint8_t data[8];
 					data[0] = 4;
-					can.send(*hcan, 0x303, data, 1);
+					can.send(*hcan, can.getBaseID()+3, data, 1);
 				}
 				break;
 			default:
+				if(receiveID == 0x0){
+					if(receiveData[0] == 0){
+						servo.reset(htim2, htim3);
+					}
+				}
 				break;
 			}
-//		if (solenoid.update(receiveID,receiveData) == false)return;
 	}
 
 	void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
@@ -70,7 +74,7 @@ extern CAN_HandleTypeDef hcan;
 
 	void main_cpp(){
 		led::init();
-		can.init(hcan,servo.getBaseID());
+		can.init(hcan,0x300);
 		uint16_t tick = 0;
 
 		while(true){

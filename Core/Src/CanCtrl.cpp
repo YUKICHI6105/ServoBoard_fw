@@ -19,17 +19,27 @@ CanCtrl::CanCtrl(/*uint32_t baseID*/){
 }
 
 void CanCtrl::init(CAN_HandleTypeDef &hcan, uint32_t baseID){
-	filter_.FilterIdHigh = baseID << 5;
+	setBaseID(baseID);
+	filter_.FilterIdHigh = this->baseID_ << 5;
 	HAL_CAN_ConfigFilter(&hcan, &filter_);
 	HAL_CAN_Start(&hcan);
 	HAL_CAN_ActivateNotification(&hcan, CAN_IT_RX_FIFO0_MSG_PENDING);
+}
+
+bool CanCtrl::setBaseID(uint32_t baseID){
+	this->baseID_ = baseID;
+	return true;
+}
+
+uint32_t CanCtrl::getBaseID(){
+	return baseID_;
 }
 
 bool CanCtrl::receive(CAN_HandleTypeDef &hcan ,uint32_t& RID,uint8_t (&data)[8]){
 	if (HAL_CAN_GetRxMessage(&hcan, CAN_RX_FIFO0, &rxHeader_, data) == HAL_OK){
 		RID = rxHeader_.StdId;
 		for(uint8_t i = 0;i<8;i++){
-			rxData[i] = data[i];
+			rxData_[i] = data[i];
 		}
 		canFlug_ = CanLed::received;
 		return true;

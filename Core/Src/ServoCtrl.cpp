@@ -5,15 +5,6 @@
 //
 //}
 
-bool ServoCtrl::setBaseID(uint32_t baseID){
-	this->baseID = baseID;
-	return true;
-}
-
-uint32_t ServoCtrl::getBaseID(){
-	return baseID;
-}
-
 bool ServoCtrl::setDuty(TIM_HandleTypeDef &htim, uint8_t data[8]){
 	if (htim.Instance == TIM2){
 		std::memcpy(&duty[0],data + 0,sizeof(uint16_t));
@@ -54,19 +45,21 @@ uint8_t TIM_ERROR(/*TIM_HandleTypeDef &htim, uint32_t Channel*/){
 }
 
 bool ServoCtrl::setMode(uint8_t mode){
-	switch(mode){
-	case 0:
-		ServoCtrl::mode = Mode::dis;
-		return true;
-		break;
-	case 1:
-		ServoCtrl::mode = Mode::pos;
-		return true;
-		break;
-	default:
-		return false;
-		break;
-	}
+	ServoCtrl::mode = (Mode)mode;
+	return true;
+//	switch(mode){
+//	case 0:
+//		ServoCtrl::mode = Mode::dis;
+//		return true;
+//		break;
+//	case 1:
+//		ServoCtrl::mode = Mode::pos;
+//		return true;
+//		break;
+//	default:
+//		return false;
+//		break;
+//	}
 }
 
 Mode ServoCtrl::getMode(){

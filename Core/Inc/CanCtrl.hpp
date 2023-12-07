@@ -18,7 +18,8 @@ enum CanLed{
 
 class CanCtrl {
 private:
-	uint8_t rxData[8];
+	uint32_t baseID_ = 0x300;
+	uint8_t rxData_[8];
 	CAN_TxHeaderTypeDef txHeader_;//送信用フレーム設定
 	CAN_RxHeaderTypeDef rxHeader_;//受信用フレーム設定
 	CAN_FilterTypeDef filter_;//受信時に中身を仕分けるためのパラメーター設定
@@ -27,6 +28,8 @@ private:
 public:
 	CanCtrl(/*uint32_t baseID*/);
 	void init(CAN_HandleTypeDef &hcan, uint32_t baseID);
+	bool setBaseID(uint32_t baseID);
+	uint32_t getBaseID();
 	bool receive(CAN_HandleTypeDef &hcan ,uint32_t& RID,uint8_t (&data)[8]);//受信関数(エラー判定のみ)内容は引数に入れ込む。
 	bool send(CAN_HandleTypeDef &hcan ,uint32_t TID ,uint8_t (&data)[8], uint8_t dlc);
 	void updateLed();
