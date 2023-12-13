@@ -12,6 +12,18 @@ extern TIM_HandleTypeDef htim3;
 extern CAN_HandleTypeDef hcan;
 
 //volatile int debug_code = 0;
+	bool setMode(uint8_t mode){
+			switch(mode){
+			case 0:
+				servo.setMode(Mode::dis);
+				return true;
+			case 1:
+				servo.setMode(Mode::pos);
+				return true;
+			default:
+				return false;
+			}
+	}
 
 	void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan){
 		uint32_t receiveID = 0x110;
@@ -19,7 +31,7 @@ extern CAN_HandleTypeDef hcan;
 		if (can.receive(*hcan ,receiveID,receiveData) == false)return;
 		switch(receiveID-= can.getBaseID()){
 			case 0x0:
-				if(servo.setMode(receiveData[0]) == true){
+				if(setMode(receiveData[0]) == true){
 //					debug_code = 1;
 					uint8_t data[8];
 					data[0] = 1;

@@ -14,7 +14,7 @@ private:
 	void _stopPWM(TIM_HandleTypeDef &htim, uint32_t Channel);
 public:
 //	ServoCtrl();
-	bool setMode(uint8_t mode);
+	void setMode(Mode mode);
 	Mode getMode();
 	bool setDuty(TIM_HandleTypeDef &htim ,uint8_t data[8]);
 	uint8_t& getDuty(TIM_HandleTypeDef &htim);

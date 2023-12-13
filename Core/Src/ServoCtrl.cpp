@@ -44,23 +44,11 @@ uint8_t TIM_ERROR(/*TIM_HandleTypeDef &htim, uint32_t Channel*/){
 	return 0;
 }
 
-bool ServoCtrl::setMode(uint8_t mode){
-	ServoCtrl::mode = (Mode)mode;
-	return true;
-//	switch(mode){
-//	case 0:
-//		ServoCtrl::mode = Mode::dis;
-//		return true;
-//		break;
-//	case 1:
-//		ServoCtrl::mode = Mode::pos;
-//		return true;
-//		break;
-//	default:
-//		return false;
-//		break;
-//	}
+void ServoCtrl::setMode(Mode mode){
+	ServoCtrl::mode = mode;
 }
+
+
 
 Mode ServoCtrl::getMode(){
 	return mode;
