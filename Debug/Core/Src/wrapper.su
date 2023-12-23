@@ -1,7 +1,8 @@
 ../Core/Inc/LedCtrl.hpp:4:13:void led::init()	16	static
 ../Core/Inc/LedCtrl.hpp:19:13:void led::update(uint16_t&)	16	static
-../Core/Src/wrapper.cpp:16:7:void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef*)	88	static
-../Core/Src/wrapper.cpp:61:7:void HAL_GPIO_EXTI_Callback(uint16_t)	16	static
-../Core/Src/wrapper.cpp:71:7:void main_cpp()	16	static
-../Core/Src/wrapper.cpp:83:1:void __static_initialization_and_destruction_0(int, int)	16	static
-../Core/Src/wrapper.cpp:83:1:cpp)	8	static
+../Core/Src/wrapper.cpp:15:7:bool setMode(uint8_t)	16	static
+../Core/Src/wrapper.cpp:28:7:void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef*)	88	static
+../Core/Src/wrapper.cpp:77:7:void HAL_GPIO_EXTI_Callback(uint16_t)	16	static
+../Core/Src/wrapper.cpp:87:7:void main_cpp()	16	static
+../Core/Src/wrapper.cpp:99:1:void __static_initialization_and_destruction_0(int, int)	16	static
+../Core/Src/wrapper.cpp:99:1:cpp)	8	static

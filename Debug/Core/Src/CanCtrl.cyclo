@@ -1,5 +1,7 @@
 ../Core/Src/CanCtrl.cpp:3:1:CanCtrl::CanCtrl()	1
 ../Core/Src/CanCtrl.cpp:21:6:void CanCtrl::init(CAN_HandleTypeDef&, uint32_t)	1
-../Core/Src/CanCtrl.cpp:28:6:bool CanCtrl::receive(CAN_HandleTypeDef&, uint32_t&, uint8_t (&)[8])	3
-../Core/Src/CanCtrl.cpp:42:6:bool CanCtrl::send(CAN_HandleTypeDef&, uint32_t, uint8_t (&)[8], uint8_t)	3
-../Core/Src/CanCtrl.cpp:60:6:void CanCtrl::updateLed()	4
+../Core/Src/CanCtrl.cpp:29:6:bool CanCtrl::setBaseID(uint32_t)	1
+../Core/Src/CanCtrl.cpp:34:10:uint32_t CanCtrl::getBaseID()	1
+../Core/Src/CanCtrl.cpp:38:6:bool CanCtrl::receive(CAN_HandleTypeDef&, uint32_t&, uint8_t (&)[8])	3
+../Core/Src/CanCtrl.cpp:52:6:bool CanCtrl::send(CAN_HandleTypeDef&, uint32_t, uint8_t (&)[8], uint8_t)	3
+../Core/Src/CanCtrl.cpp:70:6:void CanCtrl::updateLed()	4
